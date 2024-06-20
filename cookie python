@@ -1,0 +1,58 @@
+import time
+
+class CookieClicker:
+    def __init__(self):
+        self.cookies = 0
+        self.click_value = 1
+        self.auto_clickers = 0
+        self.auto_clicker_cost = 10
+        self.upgrade_multiplier = 2
+
+    def click_cookie(self):
+        self.cookies += self.click_value
+
+    def buy_auto_clicker(self):
+        if self.cookies >= self.auto_clicker_cost:
+            self.cookies -= self.auto_clicker_cost
+            self.auto_clickers += 1
+            print(f"Bought an auto-clicker! Current auto-clickers: {self.auto_clickers}")
+            self.auto_clicker_cost *= self.upgrade_multiplier
+        else:
+            print("Not enough cookies to buy an auto-clicker!")
+
+    def auto_clicker_production(self):
+        while True:
+            if self.auto_clickers > 0:
+                self.cookies += self.auto_clickers
+                print(f"Auto-clickers produced {self.auto_clickers} cookies!")
+            time.sleep(1)
+
+    def run_game(self):
+        print("Welcome to Cookie Clicker!")
+        print("Commands: 'click' to click the cookie, 'buy' to buy auto-clickers, 'quit' to exit")
+        
+        # Start auto-clicker thread
+        import threading
+        auto_clicker_thread = threading.Thread(target=self.auto_clicker_production)
+        auto_clicker_thread.start()
+
+        while True:
+            print(f"\nCookies: {self.cookies}")
+            command = input("Enter command: ").strip().lower()
+
+            if command == 'click':
+                self.click_cookie()
+            elif command == 'buy':
+                self.buy_auto_clicker()
+            elif command == 'quit':
+                break
+            else:
+                print("Invalid command!")
+
+        auto_clicker_thread.join()
+        print("Thanks for playing!")
+
+# Run the game
+if __name__ == "__main__":
+    game = CookieClicker()
+    game.run_game()
